@@ -419,7 +419,7 @@ final class DownloadRequestEventsTestCase: BaseTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
 
         // Then
-        XCTAssertEqual(request.state, .finished)
+        XCTAssertEqual(request.state, .resumed)
     }
 
     func testThatCancelledDownloadRequestTriggersAllAppropriateLifetimeEvents() {

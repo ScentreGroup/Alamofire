@@ -1491,7 +1491,7 @@ class SessionTestCase: BaseTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
 
         // Then
-        XCTAssertEqual(request.state, .finished)
+        XCTAssertEqual(request.state, .resumed)
         XCTAssertEqual(response?.result.isSuccess, true)
     }
 }
