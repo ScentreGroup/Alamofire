@@ -24,7 +24,54 @@
 
 import Foundation
 
+#if swift(>=5)
 public typealias AFResult<T> = Result<T, Error>
+#else
+public enum AFResult<Success> {
+    public typealias Failure = Error
+    case success(Success)
+    case failure(Failure)
+
+    public init(catching body: () throws -> Success) {
+        do {
+            self = .success(try body())
+        } catch {
+            self = .failure(error)
+        }
+    }
+
+    public func get() throws -> Success {
+        switch self {
+        case .success(let success):
+            return success
+        case .failure(let failure):
+            throw failure
+        }
+    }
+
+    public func map<NewSuccess>(
+        _ transform: (Success) -> NewSuccess
+        ) -> AFResult<NewSuccess> {
+        switch self {
+        case .success(let success):
+            return .success(transform(success))
+        case .failure(let failure):
+            return .failure(failure)
+        }
+    }
+
+    public func mapError<NewFailure: Error>(
+        _ transform: (Failure) -> NewFailure
+        ) -> AFResult<Success> {
+        switch self {
+        case .success(let success):
+            return .success(success)
+        case .failure(let failure):
+            return .failure(transform(failure))
+        }
+    }
+}
+#endif
 
 // MARK: - Internal APIs
 
